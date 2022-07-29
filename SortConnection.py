@@ -24,7 +24,7 @@ def filter(name):
         return("error")
 
 
-xls = pd.ExcelFile('testingSort.xlsm')
+xls = pd.ExcelFile('testingSort.xlsx')
 export = pd.read_excel(xls, 'export')
 capSheet = pd.read_excel(xls, 'Capabilities')
 feat = pd.read_excel(xls, 'Features')
@@ -32,6 +32,8 @@ feat = pd.read_excel(xls, 'Features')
 length = len(export.index)
 
 export['points'] = [0 for i in range(length)]
+
+
 for i,j in feat.iterrows():
     point = calculatePoint(j['Preliminary Estimate'])
     cap = filter(j['Parent'])
@@ -39,18 +41,35 @@ for i,j in feat.iterrows():
     try:
         st = (filter(capRow['Parent'].values[0]))
     except:
-        st = "error"
+        st = "Ignore"
+    """
+    print (j['Formatted ID'])
+    print(st)"""
 
-
-
-
-    try:
+    if st != "Ignore":
         stRow = export.loc[export['Formatted ID']== st]
-        index = (stRow.index)
-        old = export['points'][index]
-        export['points'][index] = old + point
-    except:
-        print("UGH")
+        try:
+            index = (stRow.index).values[0]
+            old = export['points'][index]
+            print("this is old")
+            print(old)
+            new = old + point
+            print(new)
+            
+        
+            export.loc[index, 'points'] =  new
+            print("THIS IS NEW")
+            print(export['points'][index])
+    
+   
+        except:
+            print("EHERERER")
+            old = 0
+       
+
+
+
+export.to_csv('new.csv')
         
 
 
